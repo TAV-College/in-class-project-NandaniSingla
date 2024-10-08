@@ -22,6 +22,7 @@ var player;
 var cursors;
 var score = 0;
 var scoreText;
+var gameOver = false;
 
 function collectStar (player, star)
 {
@@ -56,11 +57,13 @@ function hitBomb (player, bomb)
     player.anims.play('turn');
 
     gameOver = true;
-    this.add.text(20,300, 'Press r to restart',{
+    this.add.text(
+        this.cameras.main.centerX,
+        this.cameras.main.centerY,
+        'Press r to restart',{
         fontSize:'64px',
-        fill:'#000',
-        align:'center'
-    })
+        fill:'#aa0000',
+    }).setOrigin(0.5,0.5)
 }
 
 function preload ()
@@ -119,6 +122,9 @@ function create ()
         frameRate: 10,
         repeat: -1
     });
+
+    cursors =this.input.keyboard.createCursorKeys();
+    reset_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     
 
     //STARS
@@ -153,6 +159,13 @@ function create ()
 function update ()
 {
     cursors = this.input.keyboard.createCursorKeys();
+    if (gameOver){
+        if(reset_key.isDown){
+            gameOver = false;
+            this.scene.restart();
+        }
+        return
+    }
     
     if (cursors.left.isDown)
         {
